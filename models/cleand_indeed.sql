@@ -4,6 +4,7 @@ select
     localisation,
     posted_date,
     whole_desc,
+    whole_cat,
     ----------- segment from whole_cat ---------
     case
         when regexp_contains(lower(whole_cat), 'cdi')
@@ -47,5 +48,5 @@ select
             or regexp_contains(lower(job_title), 'freelance')
         then 'Independent & Freelance'
         else null
-    end as contract_type_from_desc
+    end as contract_type_from_title
 from teamprojectdamarket.dbt_sheng999.stg_indeed
