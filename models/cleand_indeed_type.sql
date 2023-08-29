@@ -4,6 +4,7 @@ select
     localisation,
     posted_date,
     whole_desc,
+    ----------- segment from whole_cat ---------
     case
         when regexp_contains(lower(whole_cat), 'cdi')
         then "CDI"
@@ -25,24 +26,25 @@ select
         then 'Independent & Freelance'
         else null
     end as contract_type_from_cat,
+    ------------ segment cat from whole_desc --------------
     case
-        when regexp_contains(lower(whole_desc), 'cdi')
+        when regexp_contains(lower(job_title), 'cdi')
         then "CDI"
-        when regexp_contains(lower(whole_desc), 'cdd')
+        when regexp_contains(lower(job_title), 'cdd')
         then "CDD"
-        when regexp_contains(lower(whole_desc), 'consultant')
+        when regexp_contains(lower(job_title), 'consultant')
         then "Consultant"
         when
-            regexp_contains(lower(whole_desc), 'stage')
-            or regexp_contains(lower(whole_desc), 'alternance')
+            regexp_contains(lower(job_title), 'stage')
+            or regexp_contains(lower(job_title), 'alternance')
         then "Stage & Alternance"
         when
-            regexp_contains(lower(whole_desc), 'intérim')
-            or regexp_contains(lower(whole_desc), 'interim')
+            regexp_contains(lower(job_title), 'intérim')
+            or regexp_contains(lower(job_title), 'interim')
         then "Intérim"
         when
-            regexp_contains(lower(whole_desc), 'independent')
-            or regexp_contains(lower(whole_desc), 'freelance')
+            regexp_contains(lower(job_title), 'independent')
+            or regexp_contains(lower(job_title), 'freelance')
         then 'Independent & Freelance'
         else null
     end as contract_type_from_desc
