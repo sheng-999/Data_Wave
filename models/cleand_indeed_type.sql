@@ -26,7 +26,7 @@ select
         then 'Independent & Freelance'
         else null
     end as contract_type_from_cat,
-    ------------ segment cat from whole_desc --------------
+    ------------ segment cat from job title --------------
     case
         when regexp_contains(lower(job_title), 'cdi')
         then "CDI"
