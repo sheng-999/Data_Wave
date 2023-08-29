@@ -1,4 +1,5 @@
-with
+WITH stg_indeed AS (SELECT * FROM {{ ref ('stg_indeed')}} ),
+
     seg_contract_type as (
         select
             job_title,
@@ -74,9 +75,10 @@ with
                 then 'Independent & Freelance'
                 else null
             end as contract_type_from_desc
-        from teamprojectdamarket.dbt_sheng999.stg_indeed
+        from stg_indeed
     )
 
+,cleaned_contract_type AS(
 select
     job_title,
     job_title_min,
@@ -132,3 +134,41 @@ select
         else contract_type_from_desc
     end as contract_type
 from seg_contract_type
+)
+
+-- split the row posted_date wich has several rows inside and use only the second part
+,date_split AS(
+SELECT
+  job_title,
+  company,
+  localisation,
+  posted_date,
+  whole_desc,
+  contract_type,
+  SPLIT(posted_date,"\n")[SAFE_OFFSET(1)] AS new_date, 
+FROM cleaned_contract_type
+)
+
+-- count the number of days from the posted information
+, get_days AS (
+SELECT
+  *,
+  CASE
+    WHEN LOWER(new_date) like "%employer actif" THEN "0"
+    WHEN LOWER(new_date) like "%à l'instant" THEN "0"
+    WHEN LOWER(new_date) like "%aujourd'hui" THEN "0"
+    WHEN LOWER(new_date) like "%il y a plus de%" THEN LEFT(SPLIT(new_date,"il y a plus de ")[SAFE_OFFSET(1)],2)
+    ELSE LEFT(SPLIT(new_date,"il y a ")[SAFE_OFFSET(1)],2)
+  END AS  nb_jours
+FROM date_split
+)
+
+-- calculate the posted_date between to the extracted number of days and the scrapping date (28/08/2023)
+SELECT
+  job_title,
+  company,
+  localisation,
+  whole_desc,
+  contract_type,
+  DATE_ADD("2023-08-28", INTERVAL CAST(nb_jours AS INT64) DAY) AS posted_date_clean
+FROM get_days
