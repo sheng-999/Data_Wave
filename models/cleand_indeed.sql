@@ -7,7 +7,7 @@ with
             posted_date,
             whole_desc,
             whole_cat,
-            -- --------- segment from whole_cat ---------
+            -- ---------- segment from whole_cat ---------
             case
                 when regexp_contains(lower(whole_cat), 'cdi')
                 then "CDI"
@@ -50,7 +50,28 @@ with
                     or regexp_contains(lower(job_title), 'freelance')
                 then 'Independent & Freelance'
                 else null
-            end as contract_type_from_title
+            end as contract_type_from_title,
+            case
+                when regexp_contains(lower(whole_desc), 'cdi')
+                then "CDI"
+                when regexp_contains(lower(whole_desc), 'cdd')
+                then "CDD"
+                when regexp_contains(lower(whole_desc), 'consultant')
+                then "Consultant"
+                when
+                    regexp_contains(lower(whole_desc), 'stage')
+                    or regexp_contains(lower(whole_desc), 'alternance')
+                then "Stage & Alternance"
+                when
+                    regexp_contains(lower(whole_desc), 'intérim')
+                    or regexp_contains(lower(whole_desc), 'interim')
+                then "Intérim"
+                when
+                    regexp_contains(lower(whole_desc), 'independent')
+                    or regexp_contains(lower(whole_desc), 'freelance')
+                then 'Independent & Freelance'
+                else null
+            end as contract_type_from_desc
         from teamprojectdamarket.dbt_sheng999.stg_indeed
     )
 
@@ -63,14 +84,42 @@ select
     whole_cat,
     contract_type_from_title,
     contract_type_from_cat,
-    ------------- find the unique contract type --------------
+    contract_type_from_desc,
+    -- ----------- find the unique contract type --------------
+    /* 
+    priority : 
+    title > category > description
+    */
     case
-        when contract_type_from_cat is null and contract_type_from_title is not null then contract_type_from_title
-        when contract_type_from_title is null and contract_type_from_cat is not null then contract_type_from_cat
+        -- ----- priority 1 : title is null -----------------------
+        when contract_type_from_title is null and contract_type_from_cat is not null
+        then contract_type_from_cat
+        when contract_type_from_title is null and contract_type_from_desc is not null
+        then contract_type_from_desc
+        -- ----- priority 2 : category is null -------------------- 
+        when contract_type_from_cat is null and contract_type_from_title is not null
+        then contract_type_from_title
+        when contract_type_from_cat is null and contract_type_from_desc is not null
+        then contract_type_from_desc
+        -- ----- priority 3 : description is null -----------------
+        when contract_type_from_desc is null and contract_type_from_title is not null
+        then contract_type_from_title
+        when contract_type_from_desc is null and contract_type_from_cat is not null
+        then contract_type_from_cat
+        -- ----- if all of them are not null ----------------------
+        -- title is not null 
         when
             contract_type_from_title is not null
-            and contract_type_from_title != contract_type_from_cat
+            and (
+                contract_type_from_title != contract_type_from_cat
+                or contract_type_from_title != contract_type_from_desc
+            )
         then contract_type_from_title
-        else contract_type_from_cat
+        -- cat is not null ---------------------
+        when
+            contract_type_from_cat is not null
+            and contract_type_from_cat != contract_type_from_desc
+        then contract_type_from_cat
+        else contract_type_from_desc
     end as contract_type
 from seg_contract_type
