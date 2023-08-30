@@ -52,7 +52,9 @@ WITH stg_indeed AS (SELECT * FROM {{ ref ('stg_indeed')}} ),
                     regexp_contains(lower(job_title), 'independent')
                     or regexp_contains(lower(job_title), 'freelance')
                 then 'Independent & Freelance'
-                else 'others'
+<<<<<<< HEAD
+                else null 
+>>>>>>> 0942b8c9a02ea30f7236f961f9ec613e5f71ca2d
             end as contract_type_from_title,
             case
                 when regexp_contains(lower(whole_desc), 'cdi')
