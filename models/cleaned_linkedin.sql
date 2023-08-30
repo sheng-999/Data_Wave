@@ -38,7 +38,9 @@ with
             end as contract_type_from_title,
             -- ---- segment from job_type ----------
             case
-                when regexp_contains(lower(type), 'cdi')
+                when
+                    regexp_contains(lower(type), 'cdi')
+                    or regexp_contains(lower(type), 'temps plein')
                 then "CDI"
                 when regexp_contains(lower(type), 'cdd')
                 then "CDD"
@@ -61,19 +63,19 @@ with
             -- -------  segment from whole_desc -------------
             case
                 when regexp_contains(lower(whole_desc), 'cdi')
-                then "CDI"
+                then 'CDI'
                 when regexp_contains(lower(whole_desc), 'cdd')
-                then "CDD"
+                then 'CDD'
                 when regexp_contains(lower(whole_desc), 'consultant')
                 then "Consultant"
                 when
                     regexp_contains(lower(whole_desc), 'stage')
                     or regexp_contains(lower(whole_desc), 'alternance')
-                then "Stage & Alternance"
+                then 'Stage & Alternance'
                 when
                     regexp_contains(lower(whole_desc), 'intérim')
                     or regexp_contains(lower(whole_desc), 'interim')
-                then "Intérim"
+                then 'Intérim'
                 when
                     regexp_contains(lower(whole_desc), 'independent')
                     or regexp_contains(lower(whole_desc), 'freelance')
@@ -99,20 +101,20 @@ select
     contract_type_from_desc,
     case
         -- ----- priority 1 : title is null -----------------------
-        when contract_type_from_title is null and contract_type_from_type is not null
-        then contract_type_from_type
         when contract_type_from_title is null and contract_type_from_desc is not null
         then contract_type_from_desc
-        -- ----- priority 2 : type is null --------------------
-        when contract_type_from_type is null and contract_type_from_title is not null
-        then contract_type_from_title
-        when contract_type_from_type is null and contract_type_from_desc is not null
-        then contract_type_from_desc
-        -- ----- priority 3 : description is null -----------------
+        when contract_type_from_title is null and contract_type_from_type is not null
+        then contract_type_from_type
+        -- ----- priority 2 : description is null -----------------
         when contract_type_from_desc is null and contract_type_from_title is not null
         then contract_type_from_title
         when contract_type_from_desc is null and contract_type_from_type is not null
         then contract_type_from_type
+        -- ----- priority 3 :  type is null --------------------
+        when contract_type_from_type is null and contract_type_from_title is not null
+        then contract_type_from_title
+        when contract_type_from_type is null and contract_type_from_desc is not null
+        then contract_type_from_desc
         -- ----- if all of them are not null ----------------------
         -- title is not null
         when
@@ -122,11 +124,11 @@ select
                 or contract_type_from_title != contract_type_from_desc
             )
         then contract_type_from_title
-        -- cat is not null ---------------------
+        -- desc is not null ---------------------
         when
-            contract_type_from_type is not null
+            contract_type_from_desc is not null
             and contract_type_from_type != contract_type_from_desc
-        then contract_type_from_type
-        else contract_type_from_desc
+        then contract_type_from_desc
+        else contract_type_from_type
     end as contract_type
 from seg_contract_type
