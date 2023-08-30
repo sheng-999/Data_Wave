@@ -136,6 +136,76 @@ select
 from seg_contract_type
 )
 
+, indeed_salary_extract as
+(SELECT
+    job_title,
+    company,
+    localisation,
+    posted_date,
+    whole_desc,
+    whole_cat,
+    contract_type_from_title,
+    contract_type_from_cat,
+    contract_type,
+CASE
+    WHEN REGEXP_CONTAINS(whole_cat,"[0-9][0-9] [0-9][0-9][0-9] € à [0-9][0-9][0-9] [0-9][0-9][0-9] €") THEN regexp_extract(whole_cat,"[0-9][0-9] [0-9][0-9][0-9] € à [0-9][0-9][0-9] [0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_cat,"[0-9][0-9] [0-9][0-9][0-9] € à [0-9][0-9] [0-9][0-9][0-9] €") THEN regexp_extract(whole_cat,"[0-9][0-9] [0-9][0-9][0-9] € à [0-9][0-9] [0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_cat,"[0-9] [0-9][0-9][0-9] € à [0-9] [0-9][0-9][0-9] €") THEN regexp_extract(whole_cat,"[0-9] [0-9][0-9][0-9] € à [0-9] [0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_cat,"[0-9][0-9][0-9] € à [0-9] [0-9][0-9][0-9] €") THEN regexp_extract(whole_cat,"[0-9][0-9][0-9] € à [0-9] [0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_cat,"[0-9][0-9][0-9] € à [0-9][0-9][0-9] €") THEN regexp_extract(whole_cat,"[0-9][0-9][0-9] € à [0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_cat,"[0-9][0-9] [0-9][0-9][0-9] €") THEN regexp_extract(whole_cat,"[0-9][0-9] [0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_cat,"[0-9] [0-9][0-9][0-9] €") THEN regexp_extract(whole_cat,"[0-9] [0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_cat,"[0-9][0-9][0-9] €") THEN regexp_extract(whole_cat,"[0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_cat,"[0-9][0-9],[0-9][0-9] €") THEN regexp_extract(whole_cat,"[0-9][0-9],[0-9][0-9] €")
+    END as salaire_1,
+CASE
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9] [0-9][0-9][0-9] € à [0-9][0-9][0-9] [0-9][0-9][0-9] €") THEN regexp_extract(whole_desc,"[0-9][0-9] [0-9][0-9][0-9] € à [0-9][0-9][0-9] [0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9] [0-9][0-9][0-9] € à [0-9][0-9] [0-9][0-9][0-9] €") THEN regexp_extract(whole_desc,"[0-9][0-9] [0-9][0-9][0-9] € à [0-9][0-9] [0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9] [0-9][0-9][0-9] € à [0-9] [0-9][0-9][0-9] €") THEN regexp_extract(whole_desc,"[0-9] [0-9][0-9][0-9] € à [0-9] [0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9][0-9] € à [0-9] [0-9][0-9][0-9] €") THEN regexp_extract(whole_desc,"[0-9][0-9][0-9] € à [0-9] [0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9][0-9] € à [0-9][0-9][0-9] €") THEN regexp_extract(whole_desc,"[0-9][0-9][0-9] € à [0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9] [0-9][0-9][0-9] €") THEN regexp_extract(whole_desc,"[0-9][0-9] [0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9][0-9][0-9][0-9] €") THEN regexp_extract(whole_desc,"[0-9][0-9][0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9] [0-9][0-9][0-9] €") THEN regexp_extract(whole_desc,"[0-9] [0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9][0-9] €") THEN regexp_extract(whole_desc,"[0-9][0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9],[0-9][0-9] €") THEN regexp_extract(whole_desc,"[0-9][0-9],[0-9][0-9] €")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9]k€[^A-Za-z0-9][0-9][0-9]k€") THEN regexp_extract(whole_desc,"[0-9][0-9]k€[^A-Za-z0-9][0-9][0-9]k€")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9]k€ [^A-Za-z0-9] [0-9][0-9]k€") THEN regexp_extract(whole_desc,"[0-9][0-9]k€ [^A-Za-z0-9] [0-9][0-9]k€")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9][^A-Za-z0-9][0-9][0-9]k€") THEN regexp_extract(whole_desc,"[0-9][0-9][^A-Za-z0-9][0-9][0-9]k€")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9] [^A-Za-z0-9] [0-9][0-9]k€") THEN regexp_extract(whole_desc,"[0-9][0-9] [^A-Za-z0-9] [0-9][0-9]k€")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9] [0-9][0-9][0-9],[0-9][0-9]€") THEN regexp_extract(whole_desc,"[0-9][0-9] [0-9][0-9][0-9],[0-9][0-9]€")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9] [0-9][0-9][0-9],[0-9][0-9]") THEN regexp_extract(whole_desc,"[0-9][0-9] [0-9][0-9][0-9],[0-9][0-9]")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9] [0-9][0-9][0-9],[0-9][0-9]€") THEN regexp_extract(whole_desc,"[0-9] [0-9][0-9][0-9],[0-9][0-9]€")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9] [0-9][0-9][0-9],[0-9][0-9]") THEN regexp_extract(whole_desc,"[0-9] [0-9][0-9][0-9],[0-9][0-9]")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9][0-9][0-9],[0-9][0-9]€") THEN regexp_extract(whole_desc,"[0-9][0-9][0-9][0-9],[0-9][0-9]€")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9][0-9][0-9],[0-9][0-9]") THEN regexp_extract(whole_desc,"[0-9][0-9][0-9][0-9],[0-9][0-9]")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9][0-9],[0-9][0-9]€") THEN regexp_extract(whole_desc,"[0-9][0-9][0-9],[0-9][0-9]€")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9][0-9],[0-9][0-9]") THEN regexp_extract(whole_desc,"[0-9][0-9][0-9],[0-9][0-9]")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9]k€") THEN regexp_extract(whole_desc,"[0-9][0-9]k€")
+    WHEN REGEXP_CONTAINS(whole_desc,"[0-9][0-9] k€") THEN regexp_extract(whole_desc,"[0-9][0-9] k€")
+    END as salaire_2
+FROM cleaned_contract_type
+)
+
+, cleaned_salary AS(
+select
+    job_title,
+    company,
+    localisation,
+    posted_date,
+    whole_desc,
+    whole_cat,
+    contract_type_from_title,
+    contract_type_from_cat,
+    contract_type,
+    CASE
+    WHEN salaire_1 is not null THEN salaire_1
+    WHEN salaire_2 is not null THEN salaire_2
+    else null
+    END as salary
+from indeed_salary_extract
+)
+
 -- split the row posted_date wich has several rows inside and use only the second part
 ,date_split AS(
 SELECT
@@ -145,8 +215,9 @@ SELECT
   posted_date,
   whole_desc,
   contract_type,
+  salary,
   SPLIT(posted_date,"\n")[SAFE_OFFSET(1)] AS new_date, 
-FROM cleaned_contract_type
+FROM cleaned_salary
 )
 
 -- count the number of days from the posted information
@@ -171,6 +242,7 @@ SELECT
   localisation,
   whole_desc,
   contract_type,
+  salary,
   DATE_ADD("2023-08-28", INTERVAL CAST(nb_jours AS INT64) DAY) AS posted_date_clean
 FROM get_days
 )
@@ -190,6 +262,7 @@ SELECT
     whole_desc,
     contract_type,
     posted_date_clean,
+    salary,
     --- job title simplified in 3 categories ---
     CASE
         WHEN REGEXP_CONTAINS(job_title_min, 'data analyst|analyste data|analyste de donnees h/f|analyste de donnees techniques (h/f)|analyste des donnees f/h|data integrity analyst h/f, st priest|data quality analyst|data-analyst h/f|alternant analyste de donnees (h/f)|data quality analyst - h/f|data quality analyste informatique h/f (it) / freelance|analyste base de donnees (h/f)|analyste de donnees en ligne - france|data quality analyst h/f|apprenti(e) analyste de donnees et support au pilotage|programme analyst – economic analysis – data integration department|analyste de donnees techniques h/f|analyste donnees|analyste des donnees f/h|analyste de donnees (performance commerciale) en alternance (f/h/x)|analyste de donnees comptables h/f|stage - data quality analyst f/h|analyste donnees (h/f)|un.e ingenieur.e analyste des donnees eau et assainissement|data quality analyst (crm) - paris - f/h/x - internship|alternant - analyste master data h/f|data quality analyst (h/f)|data quality analyst|data-analyst - h/f|data & pricing analyst h/f|data quality analyst - stage|analyste de donnees pour les etudes de marche aviation commerciale f/h|analyste de donnees f-h') THEN 'data analyst'
