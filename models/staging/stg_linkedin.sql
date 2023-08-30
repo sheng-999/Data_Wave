@@ -1,5 +1,4 @@
-select 
------- avoid duplicates from 12k rows to 11.6k rows
-distinct 
-* 
-from teamprojectdamarket.raw_data.linkedin_concatenated
+select
+    -- ---- 3rd doublon check : ----
+    distinct *
+from teamprojectdamarket.dbt.linkedin_concatenated_removed_duplicated
