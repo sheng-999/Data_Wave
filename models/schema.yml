@@ -1,0 +1,28 @@
+version: 1
+
+models:
+  - name: cleaned_indeed
+    description: indeed full data with all the cleaned operations
+    columns:
+    - name: job_title
+      description: job title from the job ad
+      tests:
+        - not_null
+    - name: company
+      description: company name from the job ad
+      tests:
+        - not_null
+    - name: localisation
+      description: localisation of the company which posted the job ad, sometimes contains the mentioned of working from home
+      tests:
+        - not_null
+    - name: whole_desc
+      description: job description
+      tests:
+        - not_null
+    - name: contract_type
+      description: contract type created from the various categories
+    - name: posted_date_clean
+      description: posted_date calculated from the date in the job ad (numbers of days since it was posted)
+      tests:
+        - not_null
