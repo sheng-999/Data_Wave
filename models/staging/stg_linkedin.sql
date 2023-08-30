@@ -1,54 +1,5 @@
-select *
-from teamprojectdamarket.raw_data.linkedin_hybride_manager_fulltime_last_month
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_hybride_premier_emploi_fulltime_last_month
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_onsite_yvelines
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_remote_premier_emploi
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_onsite_aura
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_onsite_bourgogne
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_onsite_bretagnep1
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_onsite_bretagnep2
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_onsite_centre
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_onsite_grand_est
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_onsite_normandie
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_remote_others
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_onsite_paris_premier_emploi
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_onsite_hauts_de_france
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_onsite_occitanie
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_onsite_pays_de_la_loire
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_onsite_paris_others
-union all
-select *
-from teamprojectdamarket.raw_data.linkedin_onsite_paca
-where whole_desc is not null
+select 
+------ avoid duplicates from 12k rows to 11.6k rows
+distinct 
+* 
+from teamprojectdamarket.raw_data.linkedin_concatenated
