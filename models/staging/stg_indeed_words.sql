@@ -1,0 +1,1 @@
+SELECT * FROM `teamprojectdamarket.raw_data.indded_words_skills` 
