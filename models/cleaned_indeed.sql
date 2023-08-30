@@ -30,7 +30,7 @@ WITH stg_indeed AS (SELECT * FROM {{ ref ('stg_indeed')}} ),
                     regexp_contains(lower(whole_cat), 'independent')
                     or regexp_contains(lower(whole_cat), 'freelance')
                 then 'Independent & Freelance'
-                else 'others'
+                else null
             end as contract_type_from_cat,
             -- ---------- segment cat from job title -----------------
             case
@@ -52,7 +52,7 @@ WITH stg_indeed AS (SELECT * FROM {{ ref ('stg_indeed')}} ),
                     regexp_contains(lower(job_title), 'independent')
                     or regexp_contains(lower(job_title), 'freelance')
                 then 'Independent & Freelance'
-                else 'others'
+                else null 
             end as contract_type_from_title,
             case
                 when regexp_contains(lower(whole_desc), 'cdi')
@@ -73,7 +73,7 @@ WITH stg_indeed AS (SELECT * FROM {{ ref ('stg_indeed')}} ),
                     regexp_contains(lower(whole_desc), 'independent')
                     or regexp_contains(lower(whole_desc), 'freelance')
                 then 'Independent & Freelance'
-                else 'others'
+                else null
             end as contract_type_from_desc
         from stg_indeed
     )
