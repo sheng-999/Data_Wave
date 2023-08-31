@@ -6,7 +6,7 @@ SELECT
     job_location AS location,
     posted_date,
     function AS job_function,
-    job_salary AS salary,
+    salary,
     type AS job_type,
     hierarchy,
     sector,
@@ -14,4 +14,4 @@ SELECT
     contract_type,
     work_type
 FROM
-    {{ ref ("cl_linkedin_def_worktype")}}
+    {{ ref ("cl_linkedin_def_salary")}}
