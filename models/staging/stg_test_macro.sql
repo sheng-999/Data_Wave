@@ -1,12 +1,8 @@
-WITH salary_test AS (
-
 SELECT
     *,
-    {{ func_salary('whole_cat') }} as salary1
+    {{ func_contract('whole_cat') }} as contrat_type_cat,
+    {{ func_contract('job_title') }} as contrat_type_title,
+    {{ func_contract('whole_desc') }} as contrat_type_desc
 FROM 
-    {{ref("stg_indeed")}}
+    {{ref("cl_indeed_segposted_date")}}
 
-)
-SELECT *
-FROM salary_test
-wHERE salary1 IS NOT NULL

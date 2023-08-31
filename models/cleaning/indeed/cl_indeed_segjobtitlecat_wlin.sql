@@ -1,15 +1,5 @@
 SELECT 
-    job_title,
-    {{ func_replace('job_title') }} as job_title_min, 
-    company, 
-    localisation,
-    posted_date, 
-    whole_desc, 
-    whole_cat,
-    contract_type_from_cat,
-    contract_type_from_title,
-    contract_type_from_desc,
-    contract_type,
+    *,
         -- - job title simplified in 3 categories ---
     CASE
             WHEN REGEXP_CONTAINS(job_title_min, 'data analyst|data analyste|analyste data|analyste de donnees|analyste donnees|analyste des donnees|data integrity analyst|data quality analyst|data quality analyste|analyste base de donnees|programme analyst|economic analysis|analyste master data|master data finance analyst|data-analyst|data & pricing analyst|senior analyst|media analyst|data manager|quantitative analyst|lead quality analyst') THEN 'data analyst'
