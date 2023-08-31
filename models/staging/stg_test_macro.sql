@@ -1,5 +1,12 @@
+WITH salary_test AS (
+
 SELECT
-    job_title,
-    {{ func_replace('job_title') }} as job_title_min
+    *,
+    {{ func_salary('whole_cat') }} as salary1
 FROM 
-    {{ref("cl_indeed_wholecat_wlin")}}
+    {{ref("stg_indeed")}}
+
+)
+SELECT *
+FROM salary_test
+wHERE salary1 IS NOT NULL
