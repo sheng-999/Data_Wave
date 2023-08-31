@@ -129,6 +129,12 @@ select
             contract_type_from_desc is not null
             and contract_type_from_type != contract_type_from_desc
         then contract_type_from_desc
+        -- all are null, so classify as "others"
+        when
+            contract_type_from_type is null
+            and contract_type_from_title is null
+            and contract_type_from_desc is null
+        then 'CDI'
         else contract_type_from_type
     end as contract_type
 from seg_contract_type
