@@ -1,21 +1,8 @@
-with
-    stg_linkedin as (select * from {{ ref("stg_linkedin") }})
+with stg_linkedin as (select * from {{ ref("stg_linkedin") }})
 
 , seg_contract_type as (
         select
-            _,
-            job_title,
-            job_company,
-            job_location,
-            posted_date,
-            job_salary,
-            -- ----- rename function as job_function cause funtion is also a function
-            -- in sql ----------
-            function as job_function,
-            type,
-            hierarchy,
-            sector,
-            whole_desc,
+            *,
             -- ---------- segment cat from job title -----------------
             case
                 when regexp_contains(lower(job_title), 'cdi')
@@ -86,12 +73,8 @@ with
             end as contract_type_from_desc
         from stg_linkedin
     )
-<<<<<<< HEAD
-, cleaned_contract_type AS(
-=======
 
 , seg_contract_type_clean AS(
->>>>>>> 67e0b23dbbd1742f92dba3f042cc31c2b34cd000
 select
     *,
     case
@@ -131,24 +114,10 @@ select
             and contract_type_from_desc is null
         then 'CDI'
         else contract_type_from_type
-    end as contract_type
+    end as contract_type,
+    info_source
 from seg_contract_type
 )
-
-<<<<<<< HEAD
-SELECT
-    job_title,
-    job_company AS company,
-    job_location AS location,
-    posted_date,
-    job_salary AS salary,
-    type AS job_type,
-    hierarchy,
-    sector,
-    whole_desc,
-    contract_type,
-FROM cleaned_contract_type
-=======
 
 --- job title clean without accent and lower ---
 , title_cleaning AS (
@@ -157,20 +126,9 @@ SELECT
 REPLACE(REPLACE(REPLACE(LOWER(job_title), 'é', 'e'), 'è', 'e'), '(h/f)', '') as job_title_min,
 FROM seg_contract_type_clean
 )
-
-
+, cleaned_title_cat AS (
 SELECT
-    job_title,
-    job_company,
-    job_location,
-    posted_date,
-    job_salary,
-    job_funtion,
-    job_type,
-    contract_type,
-    hierarchy,
-    sector,
-    whole_desc,
+    *,
     --- job title simplified in 3 categories ---
     CASE
         WHEN REGEXP_CONTAINS(job_title_min, 'data analyst|data analyste|analyste data|analyste de donnees|analyste donnees|analyste des donnees|data integrity analyst|data quality analyst|data quality analyste|analyste base de donnees|programme analyst|economic analysis|analyste master data|master data finance analyst|data-analyst|data & pricing analyst|senior analyst|media analyst|data manager|quantitative analyst|lead quality analyst') THEN 'data analyst'
@@ -181,4 +139,18 @@ SELECT
         ELSE 'others'
     END as job_title_category
 FROM title_cleaning
->>>>>>> 67e0b23dbbd1742f92dba3f042cc31c2b34cd000
+)
+-- output
+  SELECT
+    job_title,
+    job_company AS company,
+    job_location AS location,
+    posted_date,
+    function AS job_function,
+    job_salary AS salary,
+    type AS job_type,
+    hierarchy,
+    sector,
+    whole_desc,
+    contract_type,
+FROM cleaned_title_cat
