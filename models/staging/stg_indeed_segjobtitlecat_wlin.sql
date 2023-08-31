@@ -21,3 +21,4 @@ SELECT
     END as job_title_category
 
 FROM {{ref("stg_indeed_segcontrattype_wlin")}}
+
