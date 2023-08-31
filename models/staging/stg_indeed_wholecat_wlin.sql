@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-SELECT * FROM `teamprojectdamarket.raw_data.indeed_job_date_complete` 
-=======
 select
     -- ----------- info from raw source -----------
     job_title,
@@ -31,7 +28,5 @@ select
         ifnull(cat10, ''),
         ' - ',
         ifnull(cat11, '')
-    ) as whole_cat,
-    'Indeed' as info_source
+    ) as whole_cat
 from `teamprojectdamarket.raw_data.indeed_job_date_complete`
->>>>>>> 9c374b9f0ab831792792b0f97c2a6b26f36c2395
