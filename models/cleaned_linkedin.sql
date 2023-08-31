@@ -70,7 +70,89 @@ with stg_linkedin as (select * from {{ ref("stg_linkedin") }})
                     or regexp_contains(lower(whole_desc), 'freelance')
                 then 'Independent & Freelance'
                 else null
-            end as contract_type_from_desc
+            end as contract_type_from_desc,
+            ----- different work type base segment  ---- 
+            case 
+            ----- step 1 teletravail Y/N segment from title ----
+            when regexp_contains(lower(job_title), '.*online.*') 
+            or regexp_contains((job_title), '.*remote.*') 
+            or regexp_contains(lower(job_title), '.*en ligne.*')
+            or regexp_contains(lower(job_title), '.*a distance.*') 
+            or regexp_contains(lower(job_title), '.*à distance.*')
+            then 'Remote'
+            when 
+            regexp_contains(lower(job_title), '.*hybride.*') 
+            or regexp_contains((job_title), '.*teletravail.*') 
+            or regexp_contains(lower(job_title), '.*télétravail.*')
+            then 'Hybride'
+            when 
+            regexp_contains(lower(job_title), '.*sur site.*') 
+            or regexp_contains((job_title), '.*on site.*') 
+            then 'Onsite'
+            else null
+        end as work_type_from_title,
+        ---- step 2 teletravail Y/N segment from location ----
+        case 
+            when regexp_contains(lower(job_location), '.*online.*') 
+            or regexp_contains((job_location), '.*remote.*') 
+            or regexp_contains(lower(job_location), '.*en ligne.*')
+            or regexp_contains(lower(job_location), '.*a distance.*') 
+            or regexp_contains(lower(job_location), '.*à distance.*')
+            or regexp_contains(lower(job_location), '.*eu.*')
+            or regexp_contains(lower(job_location), '.*us.*')
+            or regexp_contains(lower(job_location), '.*uk.*')
+            or regexp_contains(lower(job_location), '.*london.*')
+            or regexp_contains(lower(job_location), '.*londres.*')
+            then 'Remote'
+            when 
+            regexp_contains(lower(job_location), '.*hybride.*') 
+            or regexp_contains((job_location), '.*teletravail.*') 
+            or regexp_contains(lower(job_location), '.*télétravail.*')
+            then 'Hybride'
+            when 
+            regexp_contains(lower(job_location), '.*sur site.*') 
+            or regexp_contains((job_location), '.*on site.*') 
+            then 'Onsite'
+            else null
+        end as work_type_from_location,
+        ---- step  3 teletravail Y/N segment from type ----
+        case 
+            when regexp_contains(lower(type), '.*online.*') 
+            or regexp_contains((type), '.*remote.*') 
+            or regexp_contains(lower(type), '.*en ligne.*')
+            or regexp_contains(lower(type), '.*a distance.*') 
+            or regexp_contains(lower(type), '.*à distance.*')
+            then 'Remote'
+            when 
+            regexp_contains(lower(type), '.*hybride.*') 
+            or regexp_contains((type), '.*teletravail.*') 
+            or regexp_contains(lower(type), '.*télétravail.*')
+            then 'Hybride'
+            when 
+            regexp_contains(lower(type), '.*sur site.*') 
+            or regexp_contains((type), '.*on site.*') 
+            then 'Onsite'
+            else null
+        end as work_type_from_type,
+        ---- step 4 teletravail Y/N segment from desc ----
+        case 
+            when regexp_contains(lower(whole_desc), '.*online.*') 
+            or regexp_contains((whole_desc), '.*remote.*') 
+            or regexp_contains(lower(whole_desc), '.*en ligne.*')
+            or regexp_contains(lower(whole_desc), '.*a distance.*') 
+            or regexp_contains(lower(whole_desc), '.*à distance.*')
+            then 'Remote'
+            when 
+            regexp_contains(lower(whole_desc), '.*hybride.*') 
+            or regexp_contains((whole_desc), '.*teletravail.*') 
+            or regexp_contains(lower(whole_desc), '.*télétravail.*')
+            then 'Hybride'
+            when 
+            regexp_contains(lower(whole_desc), '.*sur site.*') 
+            or regexp_contains((whole_desc), '.*on site.*') 
+            then 'Onsite'
+            else null
+        end as work_type_from_desc 
         from stg_linkedin
     )
 
@@ -115,7 +197,41 @@ select
         then 'CDI'
         else contract_type_from_type
     end as contract_type,
-    info_source
+    ---------- work type segment -------------
+    case 
+        --- priority:  title > location > type > desc -------
+        --- 1: title is not null ----
+        when work_type_from_title is not null
+        then work_type_from_title
+        --- 2: if title is null ----
+        when work_type_from_title is null 
+        and work_type_from_location is not null 
+        then work_type_from_location
+        --- 3: if title & location is null ----
+        when work_type_from_title is null 
+        and work_type_from_location is null
+        and work_type_from_type is not null
+        then work_type_from_type
+        --- 4: if title, location, type are null ---
+        when work_type_from_title is null
+        and work_type_from_type is null
+        and work_type_from_location is null
+        and work_type_from_desc is not null
+        then work_type_from_desc
+       ---- 5: all of them are not null ----
+        when work_type_from_title is not null
+        and work_type_from_type is not null
+        and work_type_from_location is not null
+        and work_type_from_desc is not null 
+        then work_type_from_title
+    ---- 6 : all of them are null ----
+        when work_type_from_title is null
+        and work_type_from_type is null
+        and work_type_from_location is null
+        and work_type_from_desc is null 
+        then 'Onsite'
+    else 'Not defined'
+    end as work_type
 from seg_contract_type
 )
 
@@ -140,7 +256,7 @@ SELECT
     END as job_title_category
 FROM title_cleaning
 )
--- output
+-- output ------------- 
   SELECT
     job_title,
     job_company AS company,
@@ -153,4 +269,6 @@ FROM title_cleaning
     sector,
     whole_desc,
     contract_type,
+    info_source,
+    work_type
 FROM cleaned_title_cat
