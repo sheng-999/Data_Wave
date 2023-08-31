@@ -5,7 +5,7 @@ SELECT
     whole_desc, 
     whole_cat, 
     job_title, 
-    replace(replace(lower(job_title), 'é', 'e'), 'è', 'e') as job_title_min 
+    {{ func_replace('job_title') }} as job_title_min
 FROM 
     {{ref("cl_indeed_wholecat_wlin")}}
 
