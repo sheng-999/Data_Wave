@@ -28,4 +28,4 @@ SELECT
         else null
     end as contract_type_from_cat 
 FROM 
-    {{ref("stg_indeed_replace_wlin")}}
+    {{ref("cl_indeed_replace_wlin")}}

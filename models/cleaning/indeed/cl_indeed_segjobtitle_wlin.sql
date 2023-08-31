@@ -28,4 +28,4 @@ SELECT
         then 'Independent & Freelance'
         else null
     end as contract_type_from_title,
-FROM {{ref("stg_indeed_segwholecat_wlin")}}
+FROM {{ref("cl_indeed_segwholecat_wlin")}}

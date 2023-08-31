@@ -20,5 +20,5 @@ SELECT
             ELSE 'others'
     END as job_title_category
 
-FROM {{ref("stg_indeed_segcontrattype_wlin")}}
+FROM {{ref("cl_indeed_segcontrattype_wlin")}}
 
