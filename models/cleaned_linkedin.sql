@@ -134,7 +134,7 @@ select
             contract_type_from_type is null
             and contract_type_from_title is null
             and contract_type_from_desc is null
-        then 'others'
+        then 'CDI'
         else contract_type_from_type
     end as contract_type
 from seg_contract_type
