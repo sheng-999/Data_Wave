@@ -10,14 +10,14 @@ select
     job_title,
     job_company,
     job_location,
+    whole_desc,
     -- 2nd check: select only 1 value, group by title, company, location ---
     min(posted_date) as posted_date,
     min(job_salary) as job_salary,
     min(function) as function,
     min(type) as type,
     min(hierarchy) as hierarchy,
-    min(sector) as sector,
-    min(whole_desc) as whole_desc
--- result : from 11.6k to 10989 ----
+    min(sector) as sector
+-- result : from 11.6k to 11.3k ----
 from distinct_values
-group by job_title, job_company, job_location
+group by job_title, job_company, job_location, whole_desc
