@@ -1,7 +1,3 @@
-with
-    cleaned_linkedin as (select * from {{ ref("cleaned_linkedin") }}),
-    cleaned_indeed as (select * from {{ ref("cleaned_indeed") }})
-
 SELECT 
     info_source,
     job_title,
@@ -16,7 +12,7 @@ SELECT
     whole_desc,
     contract_type,
     work_type
-FROM cleaned_linkedin
+FROM {{ ref("cl_linkedin_end") }}
 
 UNION ALL
 SELECT
@@ -33,4 +29,4 @@ SELECT
     whole_desc,
     contract_type,
     work_type
-FROM cleaned_indeed
+FROM {{ ref("cleaned_indeed") }}
