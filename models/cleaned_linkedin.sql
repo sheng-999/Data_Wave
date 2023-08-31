@@ -86,7 +86,12 @@ with
             end as contract_type_from_desc
         from stg_linkedin
     )
+<<<<<<< HEAD
 , cleaned_contract_type AS(
+=======
+
+, seg_contract_type_clean AS(
+>>>>>>> 67e0b23dbbd1742f92dba3f042cc31c2b34cd000
 select
     *,
     case
@@ -130,6 +135,7 @@ select
 from seg_contract_type
 )
 
+<<<<<<< HEAD
 SELECT
     job_title,
     job_company AS company,
@@ -142,3 +148,37 @@ SELECT
     whole_desc,
     contract_type,
 FROM cleaned_contract_type
+=======
+
+--- job title clean without accent and lower ---
+, title_cleaning AS (
+SELECT
+*,
+REPLACE(REPLACE(REPLACE(LOWER(job_title), 'é', 'e'), 'è', 'e'), '(h/f)', '') as job_title_min,
+FROM seg_contract_type_clean
+)
+
+
+SELECT
+    job_title,
+    job_company,
+    job_location,
+    posted_date,
+    job_salary,
+    job_funtion,
+    job_type,
+    contract_type,
+    hierarchy,
+    sector,
+    whole_desc,
+    --- job title simplified in 3 categories ---
+    CASE
+        WHEN REGEXP_CONTAINS(job_title_min, 'data analyst|data analyste|analyste data|analyste de donnees|analyste donnees|analyste des donnees|data integrity analyst|data quality analyst|data quality analyste|analyste base de donnees|programme analyst|economic analysis|analyste master data|master data finance analyst|data-analyst|data & pricing analyst|senior analyst|media analyst|data manager|quantitative analyst|lead quality analyst') THEN 'data analyst'
+        WHEN REGEXP_CONTAINS(job_title_min, 'business analyst| business performance analyst|responsable produit et business analyse') THEN 'business analyst'
+        WHEN REGEXP_CONTAINS(job_title_min, 'bi analyst| business intelligence analyst|consultant power bi|consultant(e) business intelligence qlik|consultant bi|analyste decisionnel - business intelligence|consultante decisionnel - business intelligence|business intelligence analyst|expert(e) business intelligence|consultante decisionnel - business intelligence|consultant power bi|charge de power bi') THEN 'bi specialist'
+        WHEN REGEXP_CONTAINS(job_title_min, 'engineer|ingenieur') THEN 'engineer'
+        WHEN REGEXP_CONTAINS(job_title_min, 'developpeur|developer') THEN 'developer'
+        ELSE 'others'
+    END as job_title_category
+FROM title_cleaning
+>>>>>>> 67e0b23dbbd1742f92dba3f042cc31c2b34cd000
