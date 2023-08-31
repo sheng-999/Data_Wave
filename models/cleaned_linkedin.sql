@@ -1,5 +1,7 @@
 with
-    seg_contract_type as (
+    stg_linkedin as (select * from {{ ref("stg_linkedin") }})
+
+, seg_contract_type as (
         select
             _,
             job_title,
@@ -9,7 +11,7 @@ with
             job_salary,
             -- ----- rename function as job_function cause funtion is also a function
             -- in sql ----------
-            function as job_funtion,
+            function as job_function,
             type,
             hierarchy,
             sector,
@@ -82,23 +84,11 @@ with
                 then 'Independent & Freelance'
                 else null
             end as contract_type_from_desc
-        from `teamprojectdamarket.dbt_staging.stg_linkedin`
+        from stg_linkedin
     )
+, cleaned_contract_type AS(
 select
-    _,
-    job_title,
-    job_company,
-    job_location,
-    posted_date,
-    job_salary,
-    job_funtion,
-    type as job_type,
-    hierarchy,
-    sector,
-    whole_desc,
-    contract_type_from_title,
-    contract_type_from_type,
-    contract_type_from_desc,
+    *,
     case
         -- ----- priority 1 : title is null -----------------------
         when contract_type_from_title is null and contract_type_from_desc is not null
@@ -138,3 +128,17 @@ select
         else contract_type_from_type
     end as contract_type
 from seg_contract_type
+)
+
+SELECT
+    job_title,
+    job_company AS company,
+    job_location AS location,
+    posted_date,
+    job_salary AS salary,
+    type AS job_type,
+    hierarchy,
+    sector,
+    whole_desc,
+    contract_type,
+FROM cleaned_contract_type
