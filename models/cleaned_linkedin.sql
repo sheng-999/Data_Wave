@@ -1,4 +1,7 @@
 with
+    stg_linkedin as (select * from {{ ref("stg_linkedin") }}),
+
+with
     seg_contract_type as (
         select
             _,
@@ -82,7 +85,7 @@ with
                 then 'Independent & Freelance'
                 else null
             end as contract_type_from_desc
-        from `teamprojectdamarket.dbt_staging.stg_linkedin`
+        from stg_linkedin
     )
 select
     _,
@@ -136,5 +139,6 @@ select
             and contract_type_from_desc is null
         then 'CDI'
         else contract_type_from_type
-    end as contract_type
+    end as contract_type,
+    info_source
 from seg_contract_type
