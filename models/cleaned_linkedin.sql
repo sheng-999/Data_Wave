@@ -1,22 +1,8 @@
-with
-    stg_linkedin as (select * from {{ ref("stg_linkedin") }}),
+with stg_linkedin as (select * from {{ ref("stg_linkedin") }})
 
-with
-    seg_contract_type as (
+, seg_contract_type as (
         select
-            _,
-            job_title,
-            job_company,
-            job_location,
-            posted_date,
-            job_salary,
-            -- ----- rename function as job_function cause funtion is also a function
-            -- in sql ----------
-            function as job_funtion,
-            type,
-            hierarchy,
-            sector,
-            whole_desc,
+            *,
             -- ---------- segment cat from job title -----------------
             case
                 when regexp_contains(lower(job_title), 'cdi')
@@ -90,20 +76,7 @@ with
 
 , seg_contract_type_clean AS(
 select
-    _,
-    job_title,
-    job_company,
-    job_location,
-    posted_date,
-    job_salary,
-    job_funtion,
-    type as job_type,
-    hierarchy,
-    sector,
-    whole_desc,
-    contract_type_from_title,
-    contract_type_from_type,
-    contract_type_from_desc,
+    *,
     case
         -- ----- priority 1 : title is null -----------------------
         when contract_type_from_title is null and contract_type_from_desc is not null
@@ -146,7 +119,6 @@ select
 from seg_contract_type
 )
 
-
 --- job title clean without accent and lower ---
 , title_cleaning AS (
 SELECT
@@ -154,20 +126,9 @@ SELECT
 REPLACE(REPLACE(REPLACE(LOWER(job_title), 'é', 'e'), 'è', 'e'), '(h/f)', '') as job_title_min,
 FROM seg_contract_type_clean
 )
-
-
+, cleaned_title_cat AS (
 SELECT
-    job_title,
-    job_company,
-    job_location,
-    posted_date,
-    job_salary,
-    job_funtion,
-    job_type,
-    contract_type,
-    hierarchy,
-    sector,
-    whole_desc,
+    *,
     --- job title simplified in 3 categories ---
     CASE
         WHEN REGEXP_CONTAINS(job_title_min, 'data analyst|data analyste|analyste data|analyste de donnees|analyste donnees|analyste des donnees|data integrity analyst|data quality analyst|data quality analyste|analyste base de donnees|programme analyst|economic analysis|analyste master data|master data finance analyst|data-analyst|data & pricing analyst|senior analyst|media analyst|data manager|quantitative analyst|lead quality analyst') THEN 'data analyst'
@@ -178,3 +139,18 @@ SELECT
         ELSE 'others'
     END as job_title_category
 FROM title_cleaning
+)
+-- output
+  SELECT
+    job_title,
+    job_company AS company,
+    job_location AS location,
+    posted_date,
+    function AS job_function,
+    job_salary AS salary,
+    type AS job_type,
+    hierarchy,
+    sector,
+    whole_desc,
+    contract_type,
+FROM cleaned_title_cat
