@@ -28,5 +28,6 @@ select
         ifnull(cat10, ''),
         ' - ',
         ifnull(cat11, '')
-    ) as whole_cat
+    ) as whole_cat,
+    'Indeed' as info_source
 from `teamprojectdamarket.raw_data.indeed_job_date_complete`
