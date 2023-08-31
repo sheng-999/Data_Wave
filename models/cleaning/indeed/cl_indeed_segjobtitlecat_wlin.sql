@@ -1,6 +1,6 @@
 SELECT 
     job_title,
-    job_title_min, 
+    {{ func_replace('job_title') }} as job_title_min, 
     company, 
     localisation,
     posted_date, 
