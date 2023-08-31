@@ -58,4 +58,4 @@ SELECT
         then 'CDI'
         else contract_type_from_desc
     end as contract_type
-FROM {{ref("stg_indeed_segdesc_wlin")}}
+FROM {{ref("cl_indeed_segdesc_wlin")}}

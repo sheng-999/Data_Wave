@@ -5,7 +5,7 @@ select
     localisation,
     posted_date,
     whole_desc,
-    -- --------- concat all cat -------------
+    -- --------- concat all cat --------------
     concat(
         ifnull(cat1, ''),
         ' - ',

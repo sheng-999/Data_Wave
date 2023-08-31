@@ -1,7 +1,5 @@
 {% macro func_replace(string) %}
 
-{% set string = string | lower %}
-
-{{ return(string)}}
+LOWER({{string}})
 
 {% endmacro %}
