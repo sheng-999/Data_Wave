@@ -258,6 +258,7 @@ FROM title_cleaning
 )
 -- output ------------- 
   SELECT
+    info_source,
     job_title,
     job_company AS company,
     job_location AS location,
@@ -269,6 +270,5 @@ FROM title_cleaning
     sector,
     whole_desc,
     contract_type,
-    info_source,
     work_type
 FROM cleaned_title_cat
