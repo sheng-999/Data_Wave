@@ -68,13 +68,6 @@ CASE
 ---- step 4 teletravail Y/N segment from desc ----
     CASE 
     WHEN
-        regexp_contains(lower(whole_desc), '.*online.*') 
-        OR regexp_contains((whole_desc), '.*remote.*') 
-        OR regexp_contains(lower(whole_desc), '.*en ligne.*')
-        OR regexp_contains(lower(whole_desc), '.*a distance.*') 
-        OR regexp_contains(lower(whole_desc), '.*à distance.*')
-    THEN 'Remote'
-    WHEN
         regexp_contains(lower(whole_desc), '.*hybride.*') 
         OR regexp_contains((whole_desc), '.*teletravail.*') 
         OR regexp_contains(lower(whole_desc), '.*télétravail.*')
