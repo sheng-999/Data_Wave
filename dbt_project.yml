@@ -37,3 +37,8 @@ models:
 # Applies to all files under models/staging/
     staging :
       schema : 'staging'
+    cleaning:
+      indeed:
+        schema : 'cl_indeed'
+      linkedin:
+        schema : 'cl_linkedin'
