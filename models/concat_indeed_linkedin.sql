@@ -29,4 +29,4 @@ SELECT
     whole_desc,
     contract_type,
     work_type
-FROM {{ ref("cleaned_indeed") }}
+FROM {{ ref("cl_indeed_end") }}
