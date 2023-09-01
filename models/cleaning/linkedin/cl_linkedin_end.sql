@@ -7,6 +7,7 @@ SELECT
     posted_date,
     function AS job_function,
     salary,
+    job_title_category,
     type AS job_type,
     hierarchy,
     sector,
