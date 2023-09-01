@@ -14,9 +14,7 @@ SELECT
     CASE
     WHEN salaire_1 IS NOT NULL
     THEN salaire_1
-    WHEN salaire_2 IS NOT NULL
-    THEN salaire_2
-    ELSE NULL
+    ELSE salaire_2
     END AS salary
 FROM 
     salary_extract

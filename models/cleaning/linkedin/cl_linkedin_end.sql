@@ -1,9 +1,9 @@
 -- final output before concatenation with indeed ------------- 
 SELECT
-    info_source,
+    'linkedin' AS info_source,
     job_title,
     job_company AS company,
-    job_location AS location,
+    ville AS location,
     posted_date,
     function AS job_function,
     salary,
@@ -15,4 +15,4 @@ SELECT
     contract_type,
     work_type
 FROM
-    {{ ref ("cl_linkedin_def_salary")}}
+    {{ ref ("cl_linkedin_def_location")}}
