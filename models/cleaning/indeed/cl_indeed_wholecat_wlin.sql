@@ -5,7 +5,7 @@ select
     localisation,
     posted_date,
     whole_desc,
-    -- --------- concat all cat --------------
+    -- --------- concat all cat -------------
     concat(
         ifnull(cat1, ''),
         ' - ',
@@ -28,5 +28,5 @@ select
         ifnull(cat10, ''),
         ' - ',
         ifnull(cat11, '')
-    ) as whole_cat
-from `teamprojectdamarket.raw_data.indeed_job_date_complete`
+    ) as whole_cat,
+from {{ ref ("stg_indeed")}}
