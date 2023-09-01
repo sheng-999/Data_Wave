@@ -1,6 +1,11 @@
-<<<<<<< HEAD
-SELECT * FROM `teamprojectdamarket.raw_data.indeed_job_date_complete` 
-=======
+with
+    join_indeed as (
+        select *
+        from `teamprojectdamarket.raw_data.indeed_job_date_complete`
+        union all
+        select *
+        from teamprojectdamarket.raw_data.indeed_bi
+    )
 select
     -- ----------- info from raw source -----------
     job_title,
@@ -32,6 +37,4 @@ select
         ' - ',
         ifnull(cat11, '')
     ) as whole_cat,
-    'Indeed' as info_source
-from `teamprojectdamarket.raw_data.indeed_job_date_complete`
->>>>>>> 9c374b9f0ab831792792b0f97c2a6b26f36c2395
+from join_indeed
