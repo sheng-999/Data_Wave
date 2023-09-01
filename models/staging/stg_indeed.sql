@@ -1,9 +1,9 @@
 with
     join_indeed as (
-        select *
+        select distinct *
         from `teamprojectdamarket.raw_data.indeed_job_date_complete`
         union all
-        select *
+        select distinct *
         from teamprojectdamarket.raw_data.indeed_bi
     )
 select
