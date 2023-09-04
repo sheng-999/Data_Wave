@@ -14,7 +14,11 @@ SELECT
     whole_desc,
     contract_type,
     work_type,
-    ville
+    location_city,
+    latitude,
+    longitude,
+    departement,
+    region
 FROM {{ref("cl_indeed_def_location")}}
 
    
