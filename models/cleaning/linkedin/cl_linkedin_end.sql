@@ -13,6 +13,7 @@ SELECT
     sector,
     whole_desc,
     contract_type,
-    work_type
+    work_type,
+    ville
 FROM
     {{ ref ("cl_linkedin_def_location")}}
