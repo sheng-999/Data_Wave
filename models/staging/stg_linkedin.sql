@@ -1,28 +1,27 @@
-SELECT * FROM teamprojectdamarket.raw_data.linkedin_hybride_manager_fulltime_last_month
-UNION ALL
-SELECT * FROM teamprojectdamarket.raw_data.linkedin_hybride_premier_emploi_fulltime_last_month
-UNION ALL
-SELECT * FROM teamprojectdamarket.raw_data.linkedin_onsite_yvelines
-UNION ALL
-SELECT * FROM teamprojectdamarket.raw_data.linkedin_remote_premier_emploi
-UNION ALL
-SELECT * FROM teamprojectdamarket.raw_data.linkedin_onsite_aura
-UNION ALL
-SELECT * FROM teamprojectdamarket.raw_data.linkedin_onsite_bourgogne
-UNION ALL
-SELECT * FROM teamprojectdamarket.raw_data.linkedin_onsite_bretagnep1
-UNION ALL
-SELECT * FROM teamprojectdamarket.raw_data.linkedin_onsite_bretagnep2
-UNION ALL
-SELECT * FROM teamprojectdamarket.raw_data.linkedin_onsite_centre
-UNION ALL
-SELECT * FROM teamprojectdamarket.raw_data.linkedin_onsite_grand_est
-UNION ALL
-SELECT * FROM teamprojectdamarket.raw_data.linkedin_onsite_normandie
-UNION ALL
-SELECT * FROM teamprojectdamarket.raw_data.linkedin_remote_others
-UNION ALL
-SELECT * FROM teamprojectdamarket.raw_data.linkedin_remote_premier_emploi
-UNION ALL
-SELECT * FROM teamprojectdamarket.raw_data.linkedin_onsite_paris_premier_emploi
-WHERE whole_desc is not null
+    with cleaned as (
+        with distinct_values as (
+            -- 1st check : select distinct values from raw concatenated table ----
+            select distinct * from teamprojectdamarket.raw_data.linkedin_concatenated
+            -- result : from 12k to 11.6k -----
+        )
+        select
+            job_title,
+            job_company,
+            job_location,
+            whole_desc,
+            -- 2nd check: select only 1 value, group by title, company, location ---
+            min(posted_date) as posted_date,
+            min(job_salary) as job_salary,
+            min(function) as function,
+            min(type) as type,
+            min(hierarchy) as hierarchy,
+            min(sector) as sector
+        -- result : from 11.6k to 11.3k ----
+        from distinct_values
+        group by job_title, job_company, job_location, whole_desc
+    )
+    ---- stg output ----
+    select 
+    distinct *,
+    'LinkedIn' as info_source
+    from cleaned
