@@ -22,6 +22,5 @@
     )
     ---- stg output ----
     select 
-    distinct *,
-    'LinkedIn' as info_source
+    distinct *
     from cleaned

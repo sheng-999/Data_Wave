@@ -1,7 +1,7 @@
 -- final output before concatenation with indeed ------------- 
 SELECT
     'linkedin' AS info_source,
-    job_title,
+    job_title_min AS job_title,
     job_company AS company,
     ville AS location,
     posted_date,
