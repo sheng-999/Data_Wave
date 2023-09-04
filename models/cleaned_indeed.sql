@@ -253,8 +253,9 @@ SELECT
 *,
 REPLACE(REPLACE(LOWER(job_title), 'é', 'e'), 'è', 'e') as job_title_min
 FROM cleaned_posted_date
-)
+),
 
+job_title_3 as (
 SELECT
     job_title,
     company,
@@ -270,3 +271,97 @@ SELECT
         ELSE 'others'
     END as job_title_category
 FROM title_cleaning
+)
+select 
+job_title,
+    company,
+    localisation,
+    whole_desc,
+    contract_type,
+    posted_date_clean,
+    salary,
+    job_title_category,
+    REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE
+(REPLACE (localisation, '0', ''),
+'1', ''),
+'2', ''),
+'3', ''),
+'4', ''),
+'5', ''),
+'6', ''),
+'7', ''),
+'8', ''),
+'9', ''),
+'1e', ''),
+'2e', ''),
+'3e', ''),
+'4e', ''),
+'5e', ''),
+'6e', ''),
+'7e', ''),
+'8e', ''),
+'9e', ''),
+'10e', ''),
+'11e', ''),
+'12e', ''),
+'13e', ''),
+'14e', ''),
+'15e', ''),
+'16e', ''),
+'17e', ''),
+'18e', ''),
+'19e', ''),
+'20e', ''),
+'(', ''),
+')', ''),
+" + location", ''),
+")", ''),
+"Télétravail à","") 
+" et périphérie","")
+", France","")
+"Ville de ","")
+as localisation_clean,
+    FROM
+job_title_3
+
