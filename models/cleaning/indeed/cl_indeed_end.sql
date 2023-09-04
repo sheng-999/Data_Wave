@@ -13,7 +13,8 @@ SELECT
     " " AS sector,
     whole_desc,
     contract_type,
-    work_type
-FROM {{ref("cl_indeed_segsalary")}}
+    work_type,
+    ville
+FROM {{ref("cl_indeed_def_location")}}
 
    
