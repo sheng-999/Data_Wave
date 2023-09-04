@@ -10,7 +10,11 @@ CASE
     THEN "Consultant"
     WHEN
         regexp_contains(lower({{string}}), 'stage')
+        OR regexp_contains(lower({{string}}), 'stagiaire')
+        OR regexp_contains(lower({{string}}), 'internship')
+        OR regexp_contains(lower({{string}}), 'intern')
         OR regexp_contains(lower({{string}}), 'alternance')
+        OR regexp_contains(lower({{string}}), 'alternant')
     THEN "Stage & Alternance"
     WHEN
         regexp_contains(lower({{string}}), 'intérim')
