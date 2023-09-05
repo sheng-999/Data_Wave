@@ -12,7 +12,9 @@ SELECT
     sector,
     whole_desc,
     contract_type,
-    work_type
+    work_type,
+    ville,
+    if (location is not null, "france","") as country
 FROM {{ ref("cl_linkedin_end") }}
 
 UNION ALL
@@ -30,5 +32,7 @@ SELECT
     sector,
     whole_desc,
     contract_type,
-    work_type
+    work_type,
+    ville,
+    if (location is not null, "france","") as country
 FROM {{ ref("cl_indeed_end") }}
