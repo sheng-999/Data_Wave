@@ -27,6 +27,6 @@ FROM {{ref("cl_indeed_segcleanjobtime")}}
         select
             *,
             date_add(
-                "2023-08-28", interval cast(nb_jours as int64) day
+                "2023-08-28", interval -cast(nb_jours as int64) day
             ) as posted_date_clean
         from get_days
