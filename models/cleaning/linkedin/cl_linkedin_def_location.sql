@@ -48,6 +48,7 @@ SELECT
     WHEN ville IS NOT NULL THEN ville
     WHEN prefecture IS NOT NULL THEN prefecture
     WHEN chef_lieu IS NOT NULL THEN chef_lieu
+    ELSE 'teletravail'
     END AS location_city
 FROM match_region
 )
